@@ -1,25 +1,43 @@
 #include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BMP280.h>
 #include <freertos/FreeRTOS.h>
+#include <Adafruit_I2CDevice.h>
+#include <SPI.h>
 
-#define QUEUE_SIZE 10
+Adafruit_BMP280 bmp;
 
-QueueHandle_t dataQueue;
-
-void readSensor(void *parameters)
+void readSensor()
 {
+    if (!bmp.begin(0x76))
+    {
+        Serial.println("Could not find a valid BMP280 sensor :/");
+        return;
+    }
+
     for (;;)
     {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        // Read sensor data
+        float temperature = bmp.readTemperature();
+
+        // Print sensor data
+        Serial.print("Temperature = ");
+        Serial.print(temperature);
+        Serial.println(" *C");
+
+        delay(1000);
     }
 }
 
 void setup()
 {
-    dataQueue = xQueueCreate(QUEUE_SIZE, sizeof(int));
-
-    xTaskCreate(readSensor, "Read Sensor", 1000, NULL, 1, NULL);
+    delay(1000);
+    Serial.begin(9600);
+    Wire.begin();
 }
 
 void loop()
 {
+    readSensor();
 }
