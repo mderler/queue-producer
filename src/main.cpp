@@ -19,7 +19,7 @@ const char *ssid = "HTL-Weiz";
 const char *password = "HTL-Weiz";
 const int serverPort = 1234;
 
-void readSensor()
+void readSensor(void *parameters)
 {
     if (!bmp.begin(0x76))
     {
@@ -30,13 +30,11 @@ void readSensor()
     for (;;)
     {
         vTaskDelay(500 / portTICK_PERIOD_MS);
-        // Read sensor data
         float temperature = bmp.readTemperature();
         if (xQueueSend(dataQueue, &temperature, portMAX_DELAY) == pdTRUE)
         {
             Serial.print("Send sensor data from queue: ");
             Serial.println(temperature);
-            // send sensorData to consumer
         }
         else
         {
@@ -74,8 +72,8 @@ void setup()
 
     dataQueue = xQueueCreate(QUEUE_SIZE, sizeof(float));
 
-    // (readSensor, "Read Sensor", 1000, NULL, 1, NULL);
-    // xTaskCreate(sendData, "Send Data", 1000, NULL, 1, NULL);
+    xTaskCreate(readSensor, "Read Sensor", 10000, NULL, 1, NULL);
+    xTaskCreate(sendData, "Send Data", 10000, NULL, 1, NULL);
 }
 
 void loop()
