@@ -35,6 +35,8 @@ void sendData(void *parameters)
 
         if (xQueueReceive(dataQueue, &sensorData, portMAX_DELAY) == pdTRUE)
         {
+            Serial.print("Read sensor data from queue: ");
+            Serial.println(sensorData);
             // send sensorData to consumer
         }
         else
