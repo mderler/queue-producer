@@ -11,26 +11,30 @@ void ESP_TCPClient::begin(const char* ssid, const char* password) {
   }
   Serial.println("Connected to WiFi");
 
-  // Connect to the server
   client.connect(serverAddress, serverPort);
-  if (client.connected()) {
-    Serial.println("Connected to Server");
-  } else {
-    Serial.println("Connection to Server failed");
+}
+
+void ESP_TCPClient::reconnect() {
+  if (!client.connected()) {
+    client.connect(serverAddress, serverPort);
+    if (client.connected()) {
+      Serial.println("Connected to Server");
+    } else {
+      Serial.println("Connection to Server failed");
+    }
   }
 }
 
-void ESP_TCPClient::sendMessage(const String& message) {
-  if (client.connected()) {
-    // Send the message to the server
-    client.print(message);
-  } else {
-    Serial.println("Client not connected");
+void ESP_TCPClient::sendMessage(const uint8_t message) {
+  if (!client.connected()) {
+    client.connect(serverAddress, serverPort);
+    Serial.println("Connected to Server");
   }
+  client.write(message);
+  end();
 }
 
 void ESP_TCPClient::end() {
-  // Disconnect from the server
   client.stop();
   Serial.println("Disconnected from Server");
 }

@@ -8,7 +8,8 @@ public:
   ESP_TCPClient(const char* serverAddress, int serverPort);
 
   void begin(const char* ssid, const char* password);
-  void sendMessage(const String& message);
+  void reconnect();
+  void sendMessage(const uint8_t message);
   void end();
 
 private:
