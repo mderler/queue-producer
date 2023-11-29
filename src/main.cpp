@@ -1,9 +1,19 @@
 #include <Arduino.h>
 #include <freertos/FreeRTOS.h>
+#include <TCPServer.h>
+#include <TCPClient.h>
+
 
 #define QUEUE_SIZE 10
 
 QueueHandle_t dataQueue;
+
+// tcp-server config
+const char* ssid = "your-ssid";
+const char* password = "your-password";
+const int serverPort = 80;
+
+ESP_TCPServer tcpServer(serverPort);
 
 void readSensor(void *parameters)
 {
@@ -52,10 +62,13 @@ void setup()
 
     dataQueue = xQueueCreate(QUEUE_SIZE, sizeof(int));
 
+    tcpServer.begin(ssid, password);
+
     xTaskCreate(readSensor, "Read Sensor", 1000, NULL, 1, NULL);
     xTaskCreate(sendData, "Send Data", 1000, NULL, 1, NULL);
 }
 
 void loop()
 {
+    tcpServer.handleClients();
 }
