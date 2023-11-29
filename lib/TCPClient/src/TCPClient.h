@@ -7,7 +7,7 @@ class ESP_TCPClient {
 public:
   ESP_TCPClient(const char* serverAddress, int serverPort);
 
-  void begin();
+  void begin(const char* ssid, const char* password);
   void sendMessage(const String& message);
   void end();
 

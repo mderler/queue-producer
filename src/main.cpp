@@ -1,9 +1,15 @@
 #include <Arduino.h>
 #include <freertos/FreeRTOS.h>
+#include <TCPClient.h>
 
 #define QUEUE_SIZE 10
 
 QueueHandle_t dataQueue;
+
+// tcp-client config
+const char* serverAddress = "your-esp32-ip-address";
+const int serverPort = 80;
+ESP_TCPClient tcpClient(serverAddress, serverPort);
 
 void readSensor(void *parameters)
 {
