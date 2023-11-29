@@ -56,7 +56,6 @@ void sendData(void *parameters)
         {
             Serial.print("Read sensor data from queue: ");
             Serial.println(sensorData);
-            // send sensorData to consumer
             tcpClient.sendMessage(String(sensorData));
         }
         else

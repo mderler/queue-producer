@@ -4,7 +4,6 @@ ESP_TCPClient::ESP_TCPClient(const char *serverAddress, int serverPort) : server
 
 void ESP_TCPClient::begin(const char *ssid, const char *password)
 {
-  // Connect to Wi-Fi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED)
   {
